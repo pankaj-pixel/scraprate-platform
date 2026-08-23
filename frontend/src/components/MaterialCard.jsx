@@ -1,6 +1,5 @@
 import { ArrowDownRight, ArrowRight, ArrowUpRight, Clock3, Minus } from 'lucide-react';
 import PriceChart from './PriceChart';
-import ConfidenceBadge from './ConfidenceBadge';
 
 const money = (value) => Number(value || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 });
 
@@ -30,10 +29,10 @@ export default function MaterialCard({ material, history, onOpen }) {
         <span>/ {material.unit}</span>
       </div>
       <div className={`daily-change ${direction}`}><span>Daily change</span><b>{hasChange ? `${direction === 'up' ? '+' : direction === 'down' ? '−' : ''}₹${money(Math.abs(material.change))}` : '—'}</b><em>{hasChange ? `${direction === 'up' ? '+' : direction === 'down' ? '−' : ''}${Math.abs(material.change_pct).toFixed(2)}%` : 'No comparison'}</em></div>
-      <div className="card-market-meta"><ConfidenceBadge level={material.confidence}/><span className={`data-type-badge ${material.data_type}`}>{material.data_type.toUpperCase()}</span></div>
+      <div className="card-market-meta"><span className={`data-type-badge ${material.data_type}`}>{material.data_type === 'real' ? 'Published rate' : 'Demo data'}</span></div>
       <div className="trend-head"><span>7-day stored trend</span><small>₹/{material.unit}</small></div><PriceChart data={history || []} compact />
       <div className="range-row"><span>Market range</span><b>₹{money(material.low)} – ₹{money(material.high)}</b></div>
-      <div className="card-updated"><Clock3 size={12}/><span>Updated {dateLabel} · {material.source_count} active source{material.source_count === 1 ? '' : 's'}</span></div>
+      <div className="card-updated"><Clock3 size={12}/><span>{material.freshness_label || `Updated ${dateLabel}`}</span></div>
       <span className="card-detail-link">View price details <ArrowRight size={14}/></span>
     </button>
   );
