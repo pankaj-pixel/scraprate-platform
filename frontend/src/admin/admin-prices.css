@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+
+:root { font-family: 'DM Sans', sans-serif; color: #10271e; background: #f3f7f3; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+button, input, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+.admin-page { min-height: 100vh; background: radial-gradient(circle at 88% 2%, #e2f1e7 0, transparent 28rem), #f4f7f3; }
+.admin-shell { width: min(1440px, calc(100% - 48px)); margin: 0 auto; }
+.admin-header { height: 84px; border-bottom: 1px solid #dbe5dd; background: rgba(249,251,248,.88); backdrop-filter: blur(16px); }
+.admin-header-inner { height: 100%; display: flex; align-items: center; justify-content: space-between; }
+.admin-brand { display: flex; gap: 12px; align-items: center; color: inherit; text-decoration: none; }
+.admin-brand > span { display: grid; place-items: center; width: 45px; height: 45px; border-radius: 14px; color: white; background: #123e30; font-size: 23px; }
+.admin-brand strong { display: block; font: 800 21px/1 'Manrope'; }
+.admin-brand small { display: block; margin-top: 6px; font-size: 9px; letter-spacing: .17em; color: #6d7e75; }
+.admin-back { display: flex; align-items: center; gap: 8px; color: #40564b; font-weight: 700; text-decoration: none; }
+.admin-nav-actions { display: flex; align-items: center; gap: 22px; }
+.admin-main { padding: 54px 0 80px; }
+.admin-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-bottom: 30px; }
+.admin-eyebrow, .admin-section-heading span { color: #36825f; font-size: 11px; font-weight: 800; letter-spacing: .16em; }
+.admin-intro h1 { margin: 9px 0 8px; font: 800 clamp(32px, 4vw, 50px)/1.06 'Manrope'; letter-spacing: -.04em; }
+.admin-intro p { margin: 0; color: #64756c; font-size: 17px; }
+.security-note { display: flex; gap: 12px; width: min(390px, 100%); padding: 15px 18px; border: 1px solid #ead8a9; border-radius: 14px; background: #fff9e9; color: #7a5c16; }
+.security-note strong, .security-note span { display: block; }
+.security-note span { font-size: 13px; line-height: 1.5; }
+.admin-card { border: 1px solid #dbe5dd; border-radius: 22px; background: rgba(255,255,255,.94); box-shadow: 0 18px 50px rgba(25,58,42,.06); }
+.entry-card { padding: 30px; margin-bottom: 28px; }
+.admin-section-heading { display: flex; justify-content: space-between; align-items: center; gap: 20px; margin-bottom: 24px; }
+.admin-section-heading h2 { margin: 5px 0 0; font: 800 24px/1.2 'Manrope'; letter-spacing: -.025em; }
+.price-form { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+.price-form label, .admin-filters label { display: flex; flex-direction: column; gap: 8px; color: #50645a; font-size: 12px; font-weight: 800; letter-spacing: .03em; }
+.price-form input, .price-form select, .admin-filters input, .admin-filters select { width: 100%; height: 47px; border: 1px solid #d5e0d8; border-radius: 11px; outline: none; background: #fbfcfb; color: #10271e; padding: 0 13px; transition: border-color .2s, box-shadow .2s, background .2s; }
+.price-form input:focus, .price-form select:focus, .admin-filters input:focus, .admin-filters select:focus { border-color: #27865d; box-shadow: 0 0 0 3px rgba(39,134,93,.13); background: white; }
+.wide-field { grid-column: span 2; }
+.data-status { grid-column: span 2; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 0; border: 0; }
+.data-status legend { margin-bottom: 8px; color: #50645a; font-size: 12px; font-weight: 800; }
+.data-status button { min-height: 61px; border: 1px solid #d7e1da; border-radius: 12px; background: #fafcfa; color: #53655c; text-align: left; padding: 10px 13px; cursor: pointer; font-weight: 800; transition: .2s; }
+.data-status button span { display: block; margin-top: 3px; font-size: 11px; font-weight: 500; }
+.data-status button.active.demo { border-color: #d19932; box-shadow: 0 0 0 2px #f8e8bd; background: #fff9ea; color: #76500a; }
+.data-status button.active.real { border-color: #168456; box-shadow: 0 0 0 2px #cfefdf; background: #effaf4; color: #12603f; }
+.form-actions { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding-top: 20px; border-top: 1px solid #e5ece7; }
+.form-actions p { margin: 0; color: #6d7c74; font-size: 13px; }
+.primary-admin-button, .filter-button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 46px; border: 0; border-radius: 11px; background: #153c2f; color: white; padding: 0 19px; cursor: pointer; font-weight: 800; transition: transform .18s, background .18s; }
+.primary-admin-button:hover, .filter-button:hover { background: #205a45; transform: translateY(-1px); }
+.primary-admin-button:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+.text-button, .icon-button, .edit-button { border: 0; cursor: pointer; color: #24704f; background: transparent; font-weight: 800; }
+.icon-button { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid #dae4dc; border-radius: 11px; }
+.recent-card { padding: 28px 0 0; overflow: hidden; }
+.recent-card > .admin-section-heading { padding: 0 28px; }
+.admin-filters { display: grid; grid-template-columns: 1fr 1.2fr 1fr 1fr auto; align-items: end; gap: 12px; padding: 18px 28px; border-top: 1px solid #e2e9e4; border-bottom: 1px solid #e2e9e4; background: #f8faf8; }
+.filter-button { min-height: 43px; }
+.admin-table-wrap { overflow-x: auto; }
+table { width: 100%; min-width: 1080px; border-collapse: collapse; }
+th { padding: 13px 18px; background: #fbfcfb; color: #74827b; text-align: left; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; }
+td { padding: 17px 18px; border-top: 1px solid #e7ece8; color: #334a3e; font-size: 13px; white-space: nowrap; }
+td strong { color: #10271e; }
+td small { display: block; margin-top: 4px; color: #829088; font-size: 10px; }
+.average-cell { color: #0d6844; font-size: 14px; font-weight: 800; }
+.status-badge { display: inline-flex; border-radius: 999px; padding: 5px 9px; font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+.status-badge.demo { background: #fff2cf; color: #805b0a; }
+.status-badge.real { background: #dff5e9; color: #10603d; }
+.edit-button { display: inline-flex; align-items: center; gap: 6px; padding: 7px; }
+.admin-alert { display: flex; align-items: center; gap: 8px; margin-bottom: 18px; border-radius: 12px; padding: 13px 16px; font-weight: 700; }
+.admin-alert.error { border: 1px solid #efcccc; background: #fff1f1; color: #a23333; }
+.admin-alert.success { border: 1px solid #bde5ce; background: #edfaf3; color: #176441; }
+.admin-loading, .admin-empty { min-height: 220px; display: flex; align-items: center; justify-content: center; gap: 10px; color: #65766d; }
+.admin-empty { flex-direction: column; }
+.admin-empty strong { color: #263d31; }
+.admin-empty span { font-size: 13px; }
+.spin { animation: spin .9s linear infinite; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 1000px) { .price-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } .admin-filters { grid-template-columns: repeat(2, 1fr); } .filter-button { grid-column: span 2; } }
+@media (max-width: 700px) { .admin-shell { width: min(100% - 28px, 1440px); } .admin-header { height: 72px; } .admin-back { font-size: 0; } .admin-nav-actions { gap: 12px; } .admin-nav-actions .admin-back:first-child { font-size: 12px; } .admin-back svg { width: 21px; height: 21px; } .admin-main { padding-top: 32px; } .admin-intro { align-items: stretch; flex-direction: column; } .security-note { width: 100%; } .entry-card { padding: 21px; } .price-form { grid-template-columns: 1fr; } .wide-field, .data-status { grid-column: span 1; } .form-actions { align-items: stretch; flex-direction: column; } .primary-admin-button { width: 100%; } .recent-card > .admin-section-heading { padding: 0 20px; } .admin-filters { grid-template-columns: 1fr; padding: 17px 20px; } .filter-button { grid-column: span 1; } }

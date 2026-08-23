@@ -1,0 +1,3 @@
+date,city,material,grade,low_price,average_price,high_price,unit,source
+2026-01-15,delhi,copper,,700.00,710.00,720.00,kg,replace-with-active-source
+2026-01-15,noida,aluminium,standard,160.00,165.00,170.00,kg,replace-with-active-source
