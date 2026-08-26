@@ -19,6 +19,31 @@ PriceSourceType = Literal[
 ConfidenceLevel = Literal["LOW", "MEDIUM", "HIGH"]
 FreshnessLevel = Literal["FRESH", "STALE", "VERY_STALE"]
 
+
+class VisitorEventCreate(BaseModel):
+    visitor_id: str = Field(min_length=16, max_length=100)
+    session_id: str = Field(min_length=16, max_length=100)
+    event_name: Literal["page_view", "material_viewed", "city_changed", "calculator_used", "chart_period_changed"]
+    path: str = Field(min_length=1, max_length=255)
+    referrer: str | None = Field(default=None, max_length=1000)
+    material_slug: str | None = Field(default=None, pattern=r"^[a-z0-9-]+$", max_length=100)
+    city: str | None = Field(default=None, max_length=80)
+
+
+class AnalyticsSummaryResponse(BaseModel):
+    days: int
+    page_views: int
+    unique_visitors: int
+    sessions: int
+    events: int
+    today_page_views: int
+    top_pages: list[dict]
+    top_referrers: list[dict]
+    devices: list[dict]
+    browsers: list[dict]
+    daily: list[dict]
+    recent_visits: list[dict]
+
 class PublicSourceDetail(BaseModel):
     name: str
     source_type: str

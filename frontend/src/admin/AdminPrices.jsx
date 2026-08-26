@@ -109,7 +109,7 @@ function AdminPrices() {
   return <div className="admin-page">
     <header className="admin-header"><div className="admin-shell admin-header-inner">
       <a href="/" className="admin-brand"><span>♻</span><div><strong>ScrapRate</strong><small>INTERNAL PRICE ADMIN</small></div></a>
-      <div className="admin-nav-actions"><a href="/admin/data-sources" className="admin-back">Data sources</a><a href="/admin/price-submissions" className="admin-back">Review submissions</a><a href="/admin/import-prices" className="admin-back">Import CSV</a><a href="/" className="admin-back"><ArrowLeft size={17}/> Public homepage</a></div>
+      <div className="admin-nav-actions"><a href="/admin/analytics" className="admin-back">Site analytics</a><a href="/admin/data-sources" className="admin-back">Data sources</a><a href="/admin/price-submissions" className="admin-back">Review submissions</a><a href="/admin/import-prices" className="admin-back">Import CSV</a><a href="/" className="admin-back"><ArrowLeft size={17}/> Public homepage</a></div>
     </div></header>
 
     <main className="admin-shell admin-main">

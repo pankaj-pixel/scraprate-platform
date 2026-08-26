@@ -21,6 +21,7 @@ from app.api import (
     materials,
     prices,
     seo,
+    analytics,
 )
 from app.config import get_settings
 from app.database import get_db
@@ -53,6 +54,8 @@ app.include_router(admin_price_submissions.router)
 app.include_router(admin_data_sources.router)
 app.include_router(benchmarks.router)
 app.include_router(seo.router)
+app.include_router(analytics.public_router)
+app.include_router(analytics.admin_router)
 
 
 @app.exception_handler(SQLAlchemyError)

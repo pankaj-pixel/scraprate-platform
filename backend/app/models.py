@@ -280,3 +280,26 @@ class IngestionRun(Base):
     error_message: Mapped[str | None] = mapped_column(Text)
 
     source: Mapped[PriceSource] = relationship(back_populates="ingestion_runs")
+
+
+class VisitorEvent(Base):
+    __tablename__ = "visitor_events"
+    __table_args__ = (
+        Index("ix_visitor_events_occurred_at", "occurred_at"),
+        Index("ix_visitor_events_visitor_occurred", "visitor_hash", "occurred_at"),
+        Index("ix_visitor_events_path_occurred", "path", "occurred_at"),
+        MYSQL_TABLE_OPTIONS,
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    visitor_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    session_hash: Mapped[str] = mapped_column(String(64), nullable=False)
+    event_name: Mapped[str] = mapped_column(String(50), nullable=False)
+    path: Mapped[str] = mapped_column(String(255), nullable=False)
+    referrer_domain: Mapped[str | None] = mapped_column(String(255))
+    device_type: Mapped[str] = mapped_column(String(20), nullable=False, default="unknown", server_default="unknown")
+    browser: Mapped[str] = mapped_column(String(40), nullable=False, default="unknown", server_default="unknown")
+    operating_system: Mapped[str] = mapped_column(String(40), nullable=False, default="unknown", server_default="unknown")
+    material_slug: Mapped[str | None] = mapped_column(String(100))
+    city: Mapped[str | None] = mapped_column(String(80))

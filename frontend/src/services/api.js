@@ -74,3 +74,11 @@ export const dataSourceApi = {
   list: () => get('/api/v1/admin/data-sources'),
   run: (id) => request(`/api/v1/admin/data-sources/${id}/run`, { method: 'POST' }),
 };
+
+export const analyticsAdminApi = {
+  summary: async (days, key) => {
+    const response = await fetch(`${BASE_URL}/api/v1/admin/analytics/summary?days=${days}`, { headers: { 'X-Admin-Key': key } });
+    if (!response.ok) throw new Error(response.status === 401 ? 'Invalid or missing admin key' : 'Analytics unavailable');
+    return response.json();
+  },
+};

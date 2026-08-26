@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     urban_scrap_url: str = "https://urbanscrap.co/scrap-rates/"
     collector_user_agent: str = "ScrapRate-Public-Rate-Collector/1.0 (+price-source monitoring)"
     collector_timeout_seconds: int = 20
+    analytics_enabled: bool = True
+    analytics_hash_salt: str = "development-only-change-me"
+    admin_api_key: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -57,6 +60,10 @@ class Settings(BaseSettings):
             raise ValueError("CORS_ORIGINS must contain explicit HTTPS production origins")
         if not self.trusted_hosts or "*" in self.trusted_hosts:
             raise ValueError("ALLOWED_HOSTS must list explicit production hosts")
+        if not self.admin_api_key or len(self.admin_api_key) < 24:
+            raise ValueError("ADMIN_API_KEY must be set to at least 24 characters in production")
+        if self.analytics_hash_salt == "development-only-change-me" or len(self.analytics_hash_salt) < 24:
+            raise ValueError("ANALYTICS_HASH_SALT must be a private value of at least 24 characters in production")
 
     @property
     def database_connect_args(self) -> dict[str, object]:
