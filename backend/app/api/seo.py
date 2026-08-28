@@ -21,7 +21,9 @@ def sitemap(session: Session = Depends(get_db)):
         ORDER BY m.slug
     """)).scalars().all()
     base = get_settings().public_site_url.rstrip("/")
-    urls = [f"{base}/", f"{base}/scrap-prices", *[f"{base}/scrap-price/{slug}" for slug in slugs]]
+    public_pages = ["", "scrap-prices", "market", "calculator", "how-it-works", "about", "contact", "methodology", "sources", "disclaimer", "privacy", "terms"]
+    urls = [f"{base}/{path}" for path in public_pages]
+    urls.extend(f"{base}/scrap-price/{slug}" for slug in slugs)
     body = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + "".join(f"  <url><loc>{escape(url)}</loc></url>\n" for url in urls) + "</urlset>"
     return Response(body, media_type="application/xml")
 
