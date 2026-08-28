@@ -39,33 +39,215 @@ NEW_MATERIALS = [
 ]
 
 def upgrade() -> None:
-    op.add_column("materials",sa.Column("seo_title",sa.String(180)))
-    op.add_column("materials",sa.Column("seo_description",sa.String(320)))
-    op.add_column("materials",sa.Column("display_order",sa.Integer(),server_default="100",nullable=False))
-    op.add_column("materials",sa.Column("image_reference",sa.String(255)))
-    op.add_column("materials",sa.Column("aliases",sa.JSON()))
-    op.add_column("materials",sa.Column("source_material_mapping",sa.JSON()))
-    conn=op.get_bind()
-    categories={slug:id for id,slug in conn.execute(sa.text("SELECT id, slug FROM material_categories"))}
-    additions=[("batteries","Batteries"),("appliances","Appliances"),("other-recyclables","Other Recyclables")]
-    for slug,name in additions:
-        if slug not in categories:
-            conn.execute(sa.text("INSERT INTO material_categories (slug,name) VALUES (:slug,:name)"),{"slug":slug,"name":name})
-    conn.execute(sa.text("UPDATE material_categories SET name='Metals' WHERE slug='metal'"))
-    conn.execute(sa.text("UPDATE material_categories SET name='E-Waste' WHERE slug='electronics'"))
-    categories={slug:id for id,slug in conn.execute(sa.text("SELECT id, slug FROM material_categories"))}
-    existing={slug for (slug,) in conn.execute(sa.text("SELECT slug FROM materials"))}
-    for slug,name,category,icon,description,order,aliases,title in NEW_MATERIALS:
-        if slug in existing: continue
-        conn.execute(sa.text("""INSERT INTO materials
-          (category_id,slug,name,unit,icon,description,is_active,seo_title,seo_description,display_order,image_reference,aliases,source_material_mapping)
-          VALUES (:category_id,:slug,:name,'kg',:icon,:description,true,:title,:seo_description,:display_order,:image_reference,:aliases,:mapping)"""),
-          {"category_id":categories[category],"slug":slug,"name":name,"icon":icon,"description":description,"title":title,
-           "seo_description":f"Check the latest indicative {name.lower()} price, source freshness and stored price history in Delhi NCR.",
-           "display_order":order,"image_reference":f"/materials/{slug}.webp","aliases":sa.text("JSON_ARRAY()") if False else __import__('json').dumps(aliases),
-           "mapping":__import__('json').dumps({"urban-scrap":[name.replace(' Scrap','')]})})
-    conn.execute(sa.text("UPDATE materials SET seo_title=CONCAT(name, ' Scrap Price Today in Delhi NCR'), seo_description=CONCAT('Check the latest indicative ', LOWER(name), ' price, source freshness and stored trends in Delhi NCR.'), image_reference=CONCAT('/materials/', slug, '.png'), display_order=id WHERE seo_title IS NULL"))
+    conn = op.get_bind()
 
+    # MySQL DDL is non-transactional, so this migration must tolerate
+    # being resumed after a partial failure.
+    inspector = sa.inspect(conn)
+    existing_columns = {
+        column["name"]
+        for column in inspector.get_columns("materials")
+    }
+
+    if "seo_title" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column("seo_title", sa.String(180))
+        )
+
+    if "seo_description" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column("seo_description", sa.String(320))
+        )
+
+    if "display_order" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column(
+                "display_order",
+                sa.Integer(),
+                server_default="100",
+                nullable=False,
+            ),
+        )
+
+    if "image_reference" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column("image_reference", sa.String(255))
+        )
+
+    if "aliases" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column("aliases", sa.JSON())
+        )
+
+    if "source_material_mapping" not in existing_columns:
+        op.add_column(
+            "materials",
+            sa.Column("source_material_mapping", sa.JSON())
+        )
+
+    # A fresh production DB may not contain the original categories yet.
+    required_categories = [
+        ("metal", "Metals"),
+        ("paper", "Paper"),
+        ("plastic", "Plastic"),
+        ("electronics", "E-Waste"),
+        ("batteries", "Batteries"),
+        ("appliances", "Appliances"),
+        ("other-recyclables", "Other Recyclables"),
+    ]
+
+    categories = {
+        slug: category_id
+        for category_id, slug in conn.execute(
+            sa.text("SELECT id, slug FROM material_categories")
+        )
+    }
+
+    for slug, name in required_categories:
+        if slug not in categories:
+            conn.execute(
+                sa.text(
+                    """
+                    INSERT INTO material_categories (slug, name)
+                    VALUES (:slug, :name)
+                    """
+                ),
+                {"slug": slug, "name": name},
+            )
+
+    # Keep existing installs consistent with the new display names.
+    conn.execute(
+        sa.text(
+            "UPDATE material_categories SET name='Metals' WHERE slug='metal'"
+        )
+    )
+    conn.execute(
+        sa.text(
+            "UPDATE material_categories SET name='E-Waste' WHERE slug='electronics'"
+        )
+    )
+
+    # Reload after inserts.
+    categories = {
+        slug: category_id
+        for category_id, slug in conn.execute(
+            sa.text("SELECT id, slug FROM material_categories")
+        )
+    }
+
+    existing = {
+        slug
+        for (slug,) in conn.execute(
+            sa.text("SELECT slug FROM materials")
+        )
+    }
+
+    import json
+
+    for (
+        slug,
+        name,
+        category,
+        icon,
+        description,
+        order,
+        aliases,
+        title,
+    ) in NEW_MATERIALS:
+
+        if slug in existing:
+            continue
+
+        conn.execute(
+            sa.text(
+                """
+                INSERT INTO materials
+                (
+                    category_id,
+                    slug,
+                    name,
+                    unit,
+                    icon,
+                    description,
+                    is_active,
+                    seo_title,
+                    seo_description,
+                    display_order,
+                    image_reference,
+                    aliases,
+                    source_material_mapping
+                )
+                VALUES
+                (
+                    :category_id,
+                    :slug,
+                    :name,
+                    'kg',
+                    :icon,
+                    :description,
+                    true,
+                    :title,
+                    :seo_description,
+                    :display_order,
+                    :image_reference,
+                    :aliases,
+                    :mapping
+                )
+                """
+            ),
+            {
+                "category_id": categories[category],
+                "slug": slug,
+                "name": name,
+                "icon": icon,
+                "description": description,
+                "title": title,
+                "seo_description": (
+                    f"Check the latest indicative {name.lower()} price, "
+                    "source freshness and stored price history in Delhi NCR."
+                ),
+                "display_order": order,
+                "image_reference": f"/materials/{slug}.webp",
+                "aliases": json.dumps(aliases),
+                "mapping": json.dumps(
+                    {
+                        "urban-scrap": [
+                            name.replace(" Scrap", "")
+                        ]
+                    }
+                ),
+            },
+        )
+
+    conn.execute(
+        sa.text(
+            """
+            UPDATE materials
+            SET
+                seo_title = CONCAT(
+                    name,
+                    ' Scrap Price Today in Delhi NCR'
+                ),
+                seo_description = CONCAT(
+                    'Check the latest indicative ',
+                    LOWER(name),
+                    ' price, source freshness and stored trends in Delhi NCR.'
+                ),
+                image_reference = CONCAT(
+                    '/materials/',
+                    slug,
+                    '.png'
+                ),
+                display_order = id
+            WHERE seo_title IS NULL
+            """
+        )
+    )
 def downgrade() -> None:
     conn=op.get_bind()
     slugs=[row[0] for row in NEW_MATERIALS]
