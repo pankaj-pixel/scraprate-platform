@@ -1,5 +1,5 @@
 const id = import.meta.env.VITE_GA_MEASUREMENT_ID;
-const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 const firstParty = import.meta.env.VITE_FIRST_PARTY_ANALYTICS !== 'false';
 const randomId=()=>crypto.randomUUID?.() || `${Date.now()}-${Math.random()}-${Math.random()}`;
 const getId=(store,key)=>{let value=store.getItem(key);if(!value){value=randomId();store.setItem(key,value)}return value};
